@@ -125,7 +125,13 @@ func main() {
 		} else {
 			days = 28
 		}
-	} else if m == jan || m == mar || m == may || m == jul || m == aug || m == oct || m == dec {
+	} else if m == jan ||
+		m == mar ||
+		m == may ||
+		m == jul ||
+		m == aug ||
+		m == oct ||
+		m == dec {
 		days = 31
 	} else {
 		days = 30
