@@ -8,6 +8,12 @@
 
 package main
 
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
+
 // ---------------------------------------------------------
 // EXERCISE: Break Up
 //
@@ -28,4 +34,32 @@ package main
 // ---------------------------------------------------------
 
 func main() {
+	if len(os.Args) != 3 {
+		fmt.Println("Usage: [min] [max]")
+		return
+	}
+	min, err1 := strconv.Atoi(os.Args[1])
+	max, err2 := strconv.Atoi(os.Args[2])
+	if err1 != nil || err2 != nil || min >= max {
+		fmt.Println("Please give me a valid input.")
+		return
+	}
+
+	i := min
+	var sum int
+	for {
+		if i%2 == 1 {
+			i++
+			continue
+		}
+		sum += i
+		fmt.Print(i)
+		if i < max {
+			fmt.Print(" + ")
+		} else {
+			break
+		}
+		i++
+	}
+	fmt.Println(" =", sum)
 }
