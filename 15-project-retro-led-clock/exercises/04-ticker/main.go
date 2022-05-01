@@ -76,6 +76,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/inancgumus/screen"
@@ -84,8 +85,11 @@ import (
 func main() {
 	screen.Clear()
 
+	smooth := 5
+	blankCnt := 0
+	clockSpcCnt := 1
+
 	for {
-		screen.MoveTopLeft()
 
 		now := time.Now()
 		hour, min, sec := now.Hour(), now.Minute(), now.Second()
@@ -98,9 +102,23 @@ func main() {
 			digits[sec/10], digits[sec%10],
 		}
 
+		if blankCnt == 0 && clockSpcCnt == 1 {
+			blankCnt = len(clock) * smooth
+		}
+
+		screen.Clear()
+
+		screen.MoveTopLeft()
+
+		blank := strings.Repeat("     ", blankCnt)
 		for line := range clock[0] {
-			for index, digit := range clock {
-				next := clock[index][line]
+			visibleClock := clock[len(clock)-clockSpcCnt:]
+			if blankCnt > 0 {
+				visibleClock = clock[:clockSpcCnt]
+				fmt.Print(blank)
+			}
+			for _, digit := range visibleClock {
+				next := digit[line]
 				if digit == colon && sec%2 == 0 {
 					next = "   "
 				}
@@ -108,7 +126,15 @@ func main() {
 			}
 			fmt.Println()
 		}
+		if blankCnt > 0 {
+			blankCnt -= 1
+			if clockSpcCnt += 1; clockSpcCnt > len(clock) {
+				clockSpcCnt = len(clock)
+			}
+		} else {
+			clockSpcCnt -= 1
+		}
 
-		time.Sleep(time.Second)
+		time.Sleep(time.Duration(int(time.Second) / len(clock)))
 	}
 }

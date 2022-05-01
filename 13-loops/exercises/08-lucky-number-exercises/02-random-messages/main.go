@@ -8,6 +8,14 @@
 
 package main
 
+import (
+	"fmt"
+	"math/rand"
+	"os"
+	"strconv"
+	"time"
+)
+
 // ---------------------------------------------------------
 // EXERCISE: Random Messages
 //
@@ -35,4 +43,39 @@ package main
 // ---------------------------------------------------------
 
 func main() {
+	const (
+		attempt = 5
+		descr   = `Guess a number, enter it and win!
+Computer will keep %d random numbers,
+If you'll guess one of them, you'll win!
+`
+		usage = "Usage: [positive number]"
+	)
+	rand.Seed(time.Now().UnixMicro())
+	if len(os.Args) != 2 {
+		fmt.Printf(descr, attempt)
+		fmt.Println(usage)
+		return
+	}
+	guess, err := strconv.Atoi(os.Args[1])
+	if err != nil || guess <= 0 {
+		fmt.Println(usage)
+		return
+	}
+	msgIdx := rand.Intn(10) + 1
+	for i := 0; i < attempt; i++ {
+		if r := rand.Intn(guess) + 2; r == guess {
+			msgIdx *= -1
+		}
+	}
+	switch {
+	case msgIdx < -5:
+		fmt.Println("  YOU WON")
+	case msgIdx < 0:
+		fmt.Println("  YOU'RE AWESOME")
+	case msgIdx < 6:
+		fmt.Println("  LOSER!")
+	default:
+		fmt.Println("  YOU LOST. TRY AGAIN")
+	}
 }
